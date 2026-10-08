@@ -1,42 +1,71 @@
-# AWS-Portfolio-
-## Overview
-This repository is my learning portfolio for AWS Solutions Architect.
-I will document small hands-on projects and architecture designs step by step.
+# AWS Cloud Infrastructure Portfolio
 
-## Current status
-- AWS Cloud Practitioner: Passed
-- Studying AWS Solutions Architect (Associate)
+Hands-on cloud infrastructure projects using AWS, Terraform, and Infrastructure as Code (IaC).
 
-## Goal
-To understand AWS architecture and explain design decisions clearly.
+## About This Repository
 
-## How I think as a Solution Architect
+I'm transitioning into cloud infrastructure engineering, building practical projects to apply my knowledge of AWS architecture, networking, security, and infrastructure automation.
 
-When comparing AWS services such as EC2, Lambda, and managed databases,
-I enjoy thinking from a business perspective rather than focusing only on technology.
+I hold the AWS Certified Solutions Architect – Associate and HashiCorp Terraform Associate certifications.
 
-I consider factors like:
-- Business impact
-- Security responsibility
-- Operational efficiency
-- Cost effectiveness
+My focus is on understanding not only how infrastructure works, but also why particular architectural decisions make sense in terms of security, reliability, operational efficiency, and cost.
 
-I believe there is no single "best" service.
-The best solution always depends on the business requirements and constraints.
+## Projects
 
+### Project 01 — Japan Market Infrastructure
 
-### AWS Storage & Load Balancing: Key Differences
+**Technologies:** AWS, Terraform, VPC Networking
 
-Today, I deepened my understanding of the differences between EBS, Instance Store, and ELB.
+A Terraform-based AWS network infrastructure project designed for a hypothetical Japan-based business environment.
 
-| Feature | **EBS (Elastic Block Store)** | **Instance Store** | **ELB (Elastic Load Balancing)** |
-| :--- | :--- | :--- | :--- |
-| **Type** | Network-attached Storage | Physically-attached Storage | Load Balancer |
-| **Persistence** | Data persists after instance termination | Data is lost if instance is terminated (Ephemeral) | N/A (Distributes traffic) |
-| **Main Use Case** | Databases, Boot volumes | High-speed cache, Temporary data | High availability, Scalability |
-| **Key Takeaway** | Think of it as a "Network USB Drive". | Think of it as a "Built-in SSD". | Think of it as a "Traffic Cop". |
+The current configuration includes:
 
-**My Notes:**
-* **EBS:** Can be detached and reattached to other instances. Reliable for long-term storage.
-* **Instance Store:** Incredible I/O speed, but very risky for important data.
-* **ELB:** Essential for distributing incoming traffic across multiple EC2 instances to ensure security and availability.
+- A custom VPC in the Tokyo AWS Region (`ap-northeast-1`)
+- One public subnet and two private subnets
+- Private subnets across two Availability Zones
+- An Internet Gateway and public route table
+- A DB subnet group for potential future database deployment
+
+**Current status:**
+
+- Terraform configuration written
+- `terraform fmt` and `terraform validate` completed
+- Source code committed and pushed to GitHub
+- AWS deployment and live verification pending
+
+[View Project 01](project-01-japan-market-infrastructure/)
+
+## Technical Focus
+
+- AWS networking and infrastructure design
+- Infrastructure as Code with Terraform
+- Security and network isolation
+- High availability and architectural trade-offs
+- Git and version control
+- Technical documentation and design decisions
+
+## My Approach
+
+I believe good infrastructure design starts with understanding business requirements.
+
+When evaluating technical solutions, I consider:
+
+- **Security:** How can access and exposure be minimized?
+- **Reliability:** How should the infrastructure handle failures?
+- **Cost:** What is appropriate for the project's scale and budget?
+- **Operations:** How can infrastructure be maintained and reproduced efficiently?
+
+My goal is to develop the practical skills needed to contribute to cloud infrastructure and engineering teams.
+
+## Certifications
+
+- AWS Certified Solutions Architect – Associate
+- AWS Certified Cloud Practitioner
+- HashiCorp Certified: Terraform Associate
+
+## Next Steps
+
+- Document the network architecture with a diagram
+- Review security and networking design decisions
+- Deploy and verify the infrastructure in AWS when account access is available
+- Expand the portfolio with additional infrastructure projects
