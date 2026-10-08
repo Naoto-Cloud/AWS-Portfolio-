@@ -1,0 +1,20 @@
+# Terraform local files
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+
+# AWS credentials
+.aws/
+**/.aws/
+awscliv2.zip
+**/awscliv2.zip
+
+# Local environment files
+.env
+.env.*
+/project-01-japan-market-infrastructure/aws/
