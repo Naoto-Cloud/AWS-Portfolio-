@@ -7,13 +7,13 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-1"
+  region = "eu-central-1"
 }
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "japan-market-vpc"
+    Name = "b2b-saas-vpc"
   }
 
 }
@@ -21,10 +21,10 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = "ap-northeast-1a"
+  availability_zone = "eu-central-1a"
 
   tags = {
-    Name = "japan-market-public-subnet-a"
+    Name = "b2b-saas-public-subnet-a"
   }
 }
 
@@ -48,13 +48,13 @@ resource "aws_route_table_association" "public" {
 resource "aws_subnet" "private_a" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
-  availability_zone = "ap-northeast-1a"
+  availability_zone = "eu-central-1a"
 }
 
 resource "aws_subnet" "private_b" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.3.0/24"
-  availability_zone = "ap-northeast-1b"
+  availability_zone = "eu-central-1b"
 }
 resource "aws_db_subnet_group" "main" {
   subnet_ids = [
@@ -64,7 +64,7 @@ resource "aws_db_subnet_group" "main" {
 }
 
 resource "aws_security_group" "web" {
-  name        = "japan-market-web-sg"
+  name        = "b2b-saas-web-sg"
   description = "Security group for web server"
   vpc_id      = aws_vpc.main.id
 
@@ -85,12 +85,12 @@ resource "aws_security_group" "web" {
   }
 
   tags = {
-    Name = "japan-market-web-sg"
+    Name = "b2b-saas-web-sg"
   }
 }
 
 resource "aws_security_group" "database" {
-  name        = "japan-market-db-sg"
+  name        = "b2b-saas-db-sg"
   description = "Allow MySQL access from web servers only"
   vpc_id      = aws_vpc.main.id
 
@@ -103,7 +103,7 @@ resource "aws_security_group" "database" {
   }
 
   tags = {
-    Name = "japan-market-db-sg"
+    Name = "b2b-saas-db-sg"
   }
 }
 data "aws_iam_policy_document" "ec2_assume_role" {
@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "ec2_assume_role" {
 }
 
 resource "aws_iam_role" "ec2_ssm" {
-  name               = "japan-market-ec2-ssm-role"
+  name               = "b2b-saas-ec2-ssm-role"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
 
@@ -128,7 +128,7 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm" {
 }
 
 resource "aws_iam_instance_profile" "ec2" {
-  name = "japan-market-ec2-profile"
+  name = "b2b-saas-ec2-profile"
   role = aws_iam_role.ec2_ssm.name
 }
 
@@ -165,11 +165,11 @@ resource "aws_instance" "web" {
   }
 
   tags = {
-    Name = "japan-market-web-server"
+    Name = "b2b-saas-web-server"
   }
 }
 resource "aws_db_instance" "main" {
-  identifier = "japan-market-db"
+  identifier = "b2b-saas-db"
 
   engine         = "mysql"
   instance_class = "db.t3.micro"
@@ -177,7 +177,7 @@ resource "aws_db_instance" "main" {
   allocated_storage = 20
   storage_type      = "gp3"
 
-  db_name  = "japanmarket"
+  db_name  = "b2bsaas"
   username = "admin"
 
   manage_master_user_password = true
@@ -196,6 +196,6 @@ resource "aws_db_instance" "main" {
   skip_final_snapshot = true
 
   tags = {
-    Name = "japan-market-database"
+    Name = "b2b-saas-database"
   }
 }
