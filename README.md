@@ -28,7 +28,7 @@ Key components:
 
 **Status:** Terraform configuration validated locally. AWS deployment and runtime testing pending.
 
-[View Project 01](project-01-japan-market-infrastructure/README.md)
+[View Project 01](project-01-b2b-saas-infrastructure/README.md)
 
 ### Project 02 — Cloud Operations & Incident Response
 
