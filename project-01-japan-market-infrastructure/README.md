@@ -1,97 +1,86 @@
-# Japan Market Infrastructure — AWS & Terraform
+# B2B SaaS Cloud Infrastructure — AWS & Terraform
 
 ## Project Overview
 
-This project models the infrastructure requirements of a Taiwanese B2B SaaS company expanding into the Japanese market.
+Inspired by my previous experience in B2B SaaS business development and market expansion, this independent project explores how to design cloud infrastructure for a growing SaaS company.
 
-The objective is to design a secure, cost-conscious AWS environment for an initial customer base of approximately 100–300 users.
+The objective is to create a secure, cost-conscious, and maintainable AWS infrastructure using Terraform, with a focus on networking, access control, and operational readiness.
 
-Infrastructure is defined using Terraform to support consistency, repeatability, and future expansion.
+**Project status:** Terraform configuration completed and validated locally. AWS deployment and runtime testing are pending.
 
 ## Business Requirements
 
-- Support a small-scale SaaS application entering the Japanese market.
-- Make the web application publicly accessible.
-- Keep the database isolated from direct internet access.
-- Minimize initial infrastructure costs.
-- Allow for future scalability as the business grows.
+- Support an initial customer base of approximately 100–300 users.
+- Provide a publicly accessible web application.
+- Isolate the database from direct internet access.
+- Balance cost efficiency, security, and maintainability.
+- Support future scalability and operational improvements.
 
 ## Architecture
 
-**AWS Region:** Asia Pacific (Tokyo) — ap-northeast-1
+**AWS Region:** Europe (Frankfurt) — `eu-central-1`
 
 **Networking**
-- Custom VPC (10.0.0.0/16)
-- One public subnet
+- Custom VPC (`10.0.0.0/16`)
+- One public subnet for the web server
 - Two private subnets across separate Availability Zones
-- Internet Gateway and public route table
+- Internet Gateway, public route table, and subnet association
 
 **Compute**
-- Amazon EC2 running Amazon Linux 2023
-- IAM role for AWS Systems Manager
+- Amazon EC2 with Amazon Linux 2023 AMI selection
+- IAM instance profile for AWS Systems Manager
+- IMDSv2 required
 
 **Database**
 - Amazon RDS for MySQL
-- Private database subnets
-- Single-AZ deployment configuration
-- Storage encryption enabled
+- Private DB subnet group
+- Single-AZ configuration
+- Encrypted storage and AWS-managed master password
 
 **Security**
-- Separate security groups for web and database resources
-- Database inbound access restricted to the web security group
-- No public database endpoint
-- IMDSv2 required for EC2
-- RDS master password managed by AWS Secrets Manager
+- Separate security groups for web and database
+- HTTP inbound access to the web security group
+- MySQL access restricted to the web security group
+- No public database access
+- IAM role with Systems Manager permissions
 
-## Architecture Decisions
-[View Architecture Diagram](docs/diagrams/architecture.md)
+## Design Decisions
 
-**Why EC2?**
+The initial architecture prioritizes simplicity and cost control over high availability.
 
-EC2 provides a straightforward starting point for hosting a small SaaS application while maintaining control over the server environment.
+EC2 provides direct control over the Linux server environment. RDS reduces database administration overhead. Public/private subnet separation limits direct exposure of database resources.
 
-**Why RDS?**
+Frankfurt is selected as a hypothetical deployment region for a SaaS company serving European customers. Actual region selection would depend on customer location, latency, regulatory requirements, and costs.
 
-RDS reduces the operational overhead associated with database installation, maintenance, and backups.
+See [Architecture Decisions](docs/architecture-decisions.md) and [Business Requirements](docs/requirements.md).
 
-**Why public and private subnets?**
-
-Separating publicly accessible compute resources from private database resources reduces unnecessary network exposure.
-
-**Why Single-AZ?**
-
-The initial project prioritizes cost efficiency over high availability. A production system with stricter uptime requirements would benefit from additional redundancy.
-
-## Security Considerations
-
-This configuration demonstrates network segmentation, restricted database access, IAM-based instance management, and encrypted database storage.
-
-Further production hardening would include HTTPS, tighter outbound rules, secure application-level credential retrieval, monitoring, and enhanced backup and recovery policies.
-
-## Validation Status
+## Validation and Limitations
 
 - Terraform formatting: completed
 - Terraform static validation: passed
-- AWS deployment: pending
-- Live infrastructure testing: not completed
+- AWS deployment: not yet performed
+- Application installation and runtime testing: not yet performed
+- Infrastructure cost and performance: not yet verified
 
-The infrastructure has not been deployed because AWS account registration remains unresolved.
+The infrastructure has not been deployed because AWS account access remains unresolved.
 
-Terraform validation confirms configuration consistency but does not verify deployment success or runtime functionality.
+Terraform validation checks configuration consistency but does not confirm that AWS resources can be provisioned successfully.
 
-## Future Improvements
+The current configuration includes EC2 and RDS resources. Applying the full configuration would provision chargeable resources; cost review is required before deployment.
 
-- Deploy and test the infrastructure in AWS.
-- Configure HTTPS and TLS termination.
-- Add monitoring with Amazon CloudWatch.
-- Introduce load balancing and Auto Scaling when traffic justifies the additional cost.
-- Add CI checks for Terraform formatting, validation, and security scanning.
-- Evaluate Multi-AZ database deployment for stronger availability requirements.
+## Next Steps
+
+- Resolve AWS account access and review deployment costs.
+- Install and configure a Linux web server.
+- Test HTTP connectivity and database network isolation.
+- Add monitoring and troubleshooting scenarios.
+- Implement HTTPS and evaluate further production hardening.
+- Introduce load balancing and Auto Scaling when justified.
 
 ## Technologies
 
-AWS | Terraform | Linux | Infrastructure as Code | VPC | EC2 | RDS | IAM | Security Groups
+AWS · Terraform · Linux · VPC · EC2 · RDS · IAM · Security Groups · Infrastructure as Code
 
 ## Author
 
-Cloud infrastructure portfolio project demonstrating AWS architecture design, Terraform configuration, and security-focused infrastructure planning.
+Independent cloud engineering portfolio project combining B2B SaaS business requirements with infrastructure design and Terraform-based configuration.
