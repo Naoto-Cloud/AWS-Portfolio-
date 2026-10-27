@@ -187,3 +187,21 @@ An independent cloud engineering portfolio project combining international B2B S
 
 The project demonstrates my transition from business-facing technology roles toward hands-on cloud infrastructure engineering.
 
+
+## Implementation and Verification
+
+The following components have been successfully deployed and tested:
+
+- AWS VPC with public and private subnets
+- EC2 instance running Amazon Linux 2023
+- IAM role configured for AWS Systems Manager
+- Successful EC2 access via SSM Session Manager without opening SSH port 22
+- Nginx installed and started on EC2
+- HTTP 200 OK response verified locally using `curl -I http://localhost`
+
+### Current Limitations
+
+- External HTTP access has not yet been verified.
+- RDS has not been deployed to avoid unnecessary costs.
+- Nginx was installed manually for testing and is not yet automated through Terraform.
+- Load balancing and auto scaling are planned future improvements.
