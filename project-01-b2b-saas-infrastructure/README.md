@@ -9,7 +9,9 @@ The objective is to build a secure, cost-conscious, and maintainable AWS infrast
 
 Rather than deploying resources without a clear purpose, this project begins with business requirements and translates them into technical architecture and infrastructure-as-code configurations.
 
-**Project status:** Terraform configuration completed and validated locally. Initial AWS infrastructure provisioning and EC2 Systems Manager connectivity have been verified. Full infrastructure deployment and application-level testing remain incomplete.
+**Project status: Core AWS networking, IAM, security groups, and an EC2 instance have been provisioned using Terraform. The EC2 instance is currently stopped to control costs. Terraform validation passes, and the latest execution plan reports no changes.
+
+The RDS configuration is retained separately in `rds.tf.example` and has not been deployed. Systems Manager connectivity, web server setup, and end-to-end application testing remain pending.
 
 ## Business Requirements
 
@@ -61,7 +63,9 @@ This design is not highly available and would require additional components for 
 - AWS-managed master password
 - Public accessibility disabled
 
-The RDS resource is defined in Terraform but has not been deployed or tested.
+The RDS instance configuration is retained in `rds.tf.example` as an optional example and is excluded from the active Terraform deployment to avoid unnecessary costs.
+
+The DB subnet group and database security group have been provisioned, but no RDS database instance has been deployed or tested.
 
 ### Security
 
@@ -101,7 +105,7 @@ See [Architecture Decisions](docs/architecture-decisions.md), [Architecture](doc
 - Passed Terraform static configuration validation.
 - Provisioned initial AWS infrastructure resources.
 - Launched an EC2 instance in the Frankfurt Region.
-- Verified AWS Systems Manager connectivity to the EC2 instance.
+- Configured an EC2 IAM instance profile with AWS Systems Manager permissions.
 - Configured Git exclusions for Terraform state files, local provider files, and installation artifacts.
 
 ### Not Yet Completed
@@ -113,12 +117,28 @@ See [Architecture Decisions](docs/architecture-decisions.md), [Architecture](doc
 - Database network isolation testing.
 - Monitoring and operational troubleshooting scenarios.
 - Infrastructure performance and capacity testing.
+- Establish and verify AWS Systems Manager connectivity to the EC2 instance.
+
+### Terraform Troubleshooting
+
+During infrastructure review, Terraform proposed replacing the existing EC2 instance.
+
+I inspected the execution plan and identified two configuration differences:
+
+- A newer Amazon Linux 2023 AMI was selected through `most_recent = true`.
+- The EC2 public IP assignment setting differed between the configuration and Terraform state.
+
+To avoid an unnecessary instance replacement, I pinned the existing AMI and aligned the public IP setting with the deployed instance.
+
+A subsequent `terraform plan` returned **No changes**, confirming that the current infrastructure matched the Terraform configuration.
+
+The EC2 instance remains stopped to control costs. Systems Manager connectivity and web application access still require further validation.
 
 ### Validation Limitations
 
 Terraform validation confirms configuration consistency but does not guarantee successful AWS resource provisioning.
 
-EC2 provisioning and Systems Manager connectivity have been verified, but this does not establish that the complete application architecture works end to end.
+EC2 provisioning has been verified through AWS CLI and Terraform state inspection. However, Systems Manager connectivity and end-to-end application functionality have not yet been validated.
 
 The infrastructure has not been tested against the assumed workload of 100–300 users.
 
@@ -128,11 +148,13 @@ The EC2 instance has been stopped to limit ongoing costs.
 
 Cost control is a key design requirement.
 
-The initial architecture uses a small EC2 instance and a Single-AZ RDS configuration to limit infrastructure complexity and expected costs.
+The initial deployment uses a small EC2 instance (`t3.micro`) to keep costs manageable. The instance is stopped when not in use, although EBS storage and other provisioned resources may still incur charges.
+
+Amazon RDS is excluded from the active deployment. Its configuration is retained in `rds.tf.example` for future testing, subject to a separate cost review.
 
 However, actual AWS charges depend on resource usage, storage, networking, pricing, and account-specific credits or offers.
 
-**Important:** The Terraform configuration includes resources that may incur charges, particularly Amazon RDS.
+**Important:** The active Terraform configuration does not provision an RDS instance. However, EC2, EBS storage, public IPv4 addresses, and other AWS resources may incur charges depending on usage and configuration.
 
 Running `terraform apply` may create billable infrastructure. Deployment should only proceed after reviewing the execution plan and estimated costs.
 

@@ -153,12 +153,12 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "web" {
-  ami                         = data.aws_ami.amazon_linux.id
+  ami = "ami-047c6a55a3f443db3"
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.web.id]
   iam_instance_profile        = aws_iam_instance_profile.ec2.name
-  associate_public_ip_address = true
+  associate_public_ip_address = false
 
   metadata_options {
     http_tokens = "required"
@@ -168,34 +168,4 @@ resource "aws_instance" "web" {
     Name = "b2b-saas-web-server"
   }
 }
-resource "aws_db_instance" "main" {
-  identifier = "b2b-saas-db"
 
-  engine         = "mysql"
-  instance_class = "db.t3.micro"
-
-  allocated_storage = 20
-  storage_type      = "gp3"
-
-  db_name  = "b2bsaas"
-  username = "admin"
-
-  manage_master_user_password = true
-
-  db_subnet_group_name   = aws_db_subnet_group.main.name
-  vpc_security_group_ids = [aws_security_group.database.id]
-
-  publicly_accessible = false
-  multi_az            = false
-
-  storage_encrypted = true
-
-  backup_retention_period = 1
-
-  deletion_protection = false
-  skip_final_snapshot = true
-
-  tags = {
-    Name = "b2b-saas-database"
-  }
-}
