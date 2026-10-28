@@ -118,7 +118,7 @@ See [Architecture Decisions](docs/architecture-decisions.md), [Architecture](doc
 - External HTTP connectivity testing from the internet.
 - RDS provisioning and database connectivity testing.
 - Database network isolation testing with a running database.
-- Automated Nginx installation and configuration.
+- Deployment and verification of automated Nginx installation using EC2 User Data.
 - CloudWatch monitoring and incident response exercises.
 - Infrastructure performance and capacity testing.
 - HTTPS configuration, load balancing, and Auto Scaling.
@@ -168,7 +168,7 @@ Running `terraform apply` may create billable infrastructure. Deployment should 
 ## Next Steps
 
 1. Investigate and resolve the EC2 replacement proposed by Terraform before applying further infrastructure changes.
-2. Automate Nginx installation and configuration using EC2 user data or another provisioning method.
+2. Test the existing EC2 User Data script on a newly provisioned instance after reviewing the replacement plan and costs.
 3. Verify external HTTP connectivity and troubleshoot networking or security group issues if necessary.
 4. Evaluate RDS deployment costs before provisioning a database.
 5. Test database connectivity and network isolation.
@@ -211,5 +211,7 @@ The following components have been successfully deployed and tested:
 
 - External HTTP access has not yet been verified.
 - RDS has not been deployed to avoid unnecessary costs.
-- Nginx was installed manually for testing and is not yet automated through Terraform.
+- An EC2 User Data script (`user-data.sh`) has been added to automate Nginx installation and startup.
+- The User Data configuration passes `terraform validate` but has not yet been deployed or tested on a newly launched EC2 instance.
+- The existing EC2 instance remains stopped, and the proposed Terraform replacement has not been applied.
 - Load balancing and auto scaling are planned future improvements.
