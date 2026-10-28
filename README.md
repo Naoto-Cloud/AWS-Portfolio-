@@ -23,7 +23,7 @@ Key components:
 - Public and private subnets across two Availability Zones
 - Internet Gateway and public routing
 - EC2 instance configuration using Amazon Linux 2023
-- Private RDS MySQL database configuration
+- RDS MySQL configuration (not yet deployed)
 - Security group isolation and IAM-based instance management
 
 **Status:** Core AWS infrastructure deployed and validated using Terraform. EC2 connectivity verified through AWS Systems Manager Session Manager, with Nginx returning HTTP 200 locally. Basic Terraform CI implemented using GitHub Actions. External HTTP connectivity and database integration remain pending.
