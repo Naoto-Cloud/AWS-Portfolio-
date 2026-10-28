@@ -9,9 +9,14 @@ The objective is to build a secure, cost-conscious, and maintainable AWS infrast
 
 Rather than deploying resources without a clear purpose, this project begins with business requirements and translates them into technical architecture and infrastructure-as-code configurations.
 
-**Project status: Core AWS networking, IAM, security groups, and an EC2 instance have been provisioned using Terraform. The EC2 instance is currently stopped to control costs. Terraform validation passes, and the latest execution plan reports no changes.
+**Project status:** The core AWS networking, IAM resources, security groups, and EC2 instance have been provisioned using Terraform. Terraform configuration validation passes.
 
-The RDS configuration is retained separately in `rds.tf.example` and has not been deployed. Systems Manager connectivity, web server setup, and end-to-end application testing remain pending.
+AWS Systems Manager Session Manager connectivity was successfully verified without exposing SSH port 22. Nginx was manually installed and started on the EC2 instance, and an HTTP 200 OK response was confirmed locally using `curl -I http://localhost`.
+
+The EC2 instance is currently stopped to control costs. The latest Terraform plan proposes replacing the instance due to a public IP assignment discrepancy observed after stopping it. No replacement has been applied, and this discrepancy remains under review.
+
+The RDS configuration is retained separately in `rds.tf.example` and has not been deployed. External HTTP connectivity, database integration, and workload testing have not yet been completed.
+
 
 ## Business Requirements
 
@@ -110,39 +115,41 @@ See [Architecture Decisions](docs/architecture-decisions.md), [Architecture](doc
 
 ### Not Yet Completed
 
-- Full infrastructure deployment and end-to-end validation.
+- External HTTP connectivity testing from the internet.
 - RDS provisioning and database connectivity testing.
-- Linux web server installation and configuration.
-- HTTP application connectivity testing.
-- Database network isolation testing.
-- Monitoring and operational troubleshooting scenarios.
+- Database network isolation testing with a running database.
+- Automated Nginx installation and configuration.
+- CloudWatch monitoring and incident response exercises.
 - Infrastructure performance and capacity testing.
-- Establish and verify AWS Systems Manager connectivity to the EC2 instance.
+- HTTPS configuration, load balancing, and Auto Scaling.
 
 ### Terraform Troubleshooting
 
-During infrastructure review, Terraform proposed replacing the existing EC2 instance.
+During infrastructure development, Terraform proposed replacing the EC2 instance because of an updated Amazon Linux 2023 AMI and differences in public IP assignment.
 
-I inspected the execution plan and identified two configuration differences:
+I pinned the AMI to prevent unexpected changes caused by automatically selecting the latest image.
 
-- A newer Amazon Linux 2023 AMI was selected through `most_recent = true`.
-- The EC2 public IP assignment setting differed between the configuration and Terraform state.
+After stopping the EC2 instance through the AWS Console to control costs, Terraform detected a change in its public IP assignment state.
 
-To avoid an unnecessary instance replacement, I pinned the existing AMI and aligned the public IP setting with the deployed instance.
+The latest `terraform plan` proposes replacing the EC2 instance because `associate_public_ip_address` is reported as `false` in the refreshed state while the Terraform configuration specifies `true`.
 
-A subsequent `terraform plan` returned **No changes**, confirming that the current infrastructure matched the Terraform configuration.
+I reviewed the plan and deliberately avoided applying the replacement to preserve the existing instance and its manually configured Nginx installation.
 
-The EC2 instance remains stopped to control costs. Systems Manager connectivity and web application access still require further validation.
+This discrepancy remains unresolved and will be reviewed before any future Terraform apply.
 
 ### Validation Limitations
 
-Terraform validation confirms configuration consistency but does not guarantee successful AWS resource provisioning.
+Terraform configuration validation passes, but this does not guarantee successful deployment or application functionality.
 
-EC2 provisioning has been verified through AWS CLI and Terraform state inspection. However, Systems Manager connectivity and end-to-end application functionality have not yet been validated.
+The EC2 instance was successfully provisioned, and AWS Systems Manager Session Manager connectivity was verified without exposing SSH port 22.
 
-The infrastructure has not been tested against the assumed workload of 100–300 users.
+Nginx was manually installed and started on Amazon Linux 2023. A local HTTP response of `200 OK` was confirmed using `curl -I http://localhost`.
 
-The EC2 instance has been stopped to limit ongoing costs.
+External HTTP connectivity has not yet been verified, and the web server has not been tested after restarting the stopped instance.
+
+No RDS database instance has been deployed, and the infrastructure has not been tested against the assumed workload of 100–300 users.
+
+The EC2 instance is currently stopped to limit ongoing costs.
 
 ## Cost Considerations
 
@@ -160,14 +167,15 @@ Running `terraform apply` may create billable infrastructure. Deployment should 
 
 ## Next Steps
 
-1. Review the Terraform execution plan and AWS pricing before further deployment.
-2. Install and configure a Linux web server on EC2.
-3. Verify HTTP connectivity and troubleshoot any network or security group issues.
-4. Evaluate RDS deployment costs before database provisioning.
+1. Investigate and resolve the EC2 replacement proposed by Terraform before applying further infrastructure changes.
+2. Automate Nginx installation and configuration using EC2 user data or another provisioning method.
+3. Verify external HTTP connectivity and troubleshoot networking or security group issues if necessary.
+4. Evaluate RDS deployment costs before provisioning a database.
 5. Test database connectivity and network isolation.
-6. Add Amazon CloudWatch monitoring and operational troubleshooting exercises.
+6. Add Amazon CloudWatch monitoring and incident response exercises.
 7. Implement HTTPS and evaluate additional security hardening.
 8. Explore load balancing and Auto Scaling when justified by availability and workload requirements.
+
 
 ## Technologies
 
