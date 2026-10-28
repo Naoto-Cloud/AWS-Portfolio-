@@ -26,7 +26,7 @@ Key components:
 - Private RDS MySQL database configuration
 - Security group isolation and IAM-based instance management
 
-**Status:** Terraform configuration validated locally. AWS deployment and runtime testing pending.
+**Status:** Core AWS infrastructure deployed and validated using Terraform. EC2 connectivity verified through AWS Systems Manager Session Manager, with Nginx returning HTTP 200 locally. Basic Terraform CI implemented using GitHub Actions. External HTTP connectivity and database integration remain pending.
 
 [View Project 01](project-01-b2b-saas-infrastructure/README.md)
 
